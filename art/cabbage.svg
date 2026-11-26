@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="head" cx="0.42" cy="0.36" r="0.72">
+      <stop offset="0" stop-color="#F3FBE3"/>
+      <stop offset="0.35" stop-color="#D6EDB0"/>
+      <stop offset="0.75" stop-color="#A9D277"/>
+      <stop offset="1" stop-color="#78AE4A"/>
+    </radialGradient>
+    <radialGradient id="outer" cx="0.5" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#8CC45A"/>
+      <stop offset="0.6" stop-color="#4E9534"/>
+      <stop offset="1" stop-color="#2D6420"/>
+    </radialGradient>
+    <linearGradient id="wrap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C4E39A"/>
+      <stop offset="1" stop-color="#7DB451"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#1d2a10" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#1d2a10" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spec" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.08" numOctaves="3" seed="3" result="n"/>
+      <feDiffuseLighting in="n" surfaceScale="3" lighting-color="#fff">
+        <feDistantLight azimuth="235" elevation="50"/>
+      </feDiffuseLighting>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.25  0 0 0 0 0.05  -1.4 0 0 0 1.2"/>
+    </filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="soft2"><feGaussianBlur stdDeviation="2"/></filter>
+    <clipPath id="hc"><circle cx="200" cy="205" r="128"/></clipPath>
+  </defs>
+  <ellipse cx="200" cy="362" rx="160" ry="20" fill="url(#shadow)"/>
+  <!-- outer leaves behind -->
+  <path d="M30 250 C10 170 60 90 130 80 C110 140 120 220 170 330 C110 340 50 310 30 250Z" fill="url(#outer)"/>
+  <path d="M370 250 C390 170 340 90 270 80 C290 140 280 220 230 330 C290 340 350 310 370 250Z" fill="url(#outer)"/>
+  <g stroke="#CDEBA8" stroke-width="2.4" fill="none" opacity="0.75" stroke-linecap="round">
+    <path d="M160 320 C100 260 70 190 100 110"/><path d="M130 280 C90 270 60 250 44 230"/><path d="M110 220 C80 200 64 180 58 150"/><path d="M104 160 C96 140 96 120 104 100"/>
+    <path d="M240 320 C300 260 330 190 300 110"/><path d="M270 280 C310 270 340 250 356 230"/><path d="M290 220 C320 200 336 180 342 150"/><path d="M296 160 C304 140 304 120 296 100"/>
+  </g>
+  <!-- head -->
+  <circle cx="200" cy="205" r="128" fill="url(#head)"/>
+  <g clip-path="url(#hc)">
+    <rect width="400" height="400" filter="url(#tex)" opacity="0.2"/>
+    <!-- overlapping leaf edges -->
+    <path d="M60 170 C110 120 210 110 300 150 C250 140 150 140 60 190Z" fill="#B7DB86" opacity="0.7"/>
+    <path d="M330 230 C290 170 200 150 120 175 C200 170 270 200 330 260Z" fill="#9FCB6C" opacity="0.55"/>
+    <path d="M70 250 C120 210 200 205 260 240 C200 230 130 240 70 280Z" fill="#8FBF5C" opacity="0.45"/>
+    <g stroke="#FBFFF2" stroke-width="3" fill="none" opacity="0.85" stroke-linecap="round">
+      <path d="M200 340 C190 270 196 200 230 120"/>
+      <path d="M200 330 C170 290 150 250 140 200"/>
+      <path d="M205 330 C240 290 270 250 290 210"/>
+    </g>
+    <g stroke="#F1FADF" stroke-width="1.6" fill="none" opacity="0.7">
+      <path d="M196 250 C170 240 150 220 130 205"/><path d="M200 210 C180 196 168 180 160 160"/><path d="M212 180 C236 170 256 160 272 140"/>
+      <path d="M220 260 C246 250 268 238 290 222"/><path d="M160 290 C140 285 120 275 100 262"/><path d="M240 290 C262 286 284 276 306 262"/>
+    </g>
+    <ellipse cx="200" cy="320" rx="150" ry="40" fill="#3f7a22" opacity="0.35" filter="url(#soft)"/>
+  </g>
+  <ellipse cx="150" cy="140" rx="50" ry="30" transform="rotate(-30 150 140)" fill="url(#spec)" opacity="0.75"/>
+  <!-- wrapping front leaves -->
+  <path d="M70 280 C80 330 140 360 200 360 C150 340 110 300 100 240 C90 250 78 262 70 280Z" fill="url(#wrap)"/>
+  <path d="M330 280 C320 330 260 360 200 360 C250 340 290 300 300 240 C310 250 322 262 330 280Z" fill="url(#wrap)"/>
+  <path d="M110 330 C140 345 170 352 200 356" stroke="#EAF7D6" stroke-width="2" fill="none" opacity="0.8"/>
+  <path d="M290 330 C260 345 230 352 200 356" stroke="#EAF7D6" stroke-width="2" fill="none" opacity="0.8"/>
+</svg>

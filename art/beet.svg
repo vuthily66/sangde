@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="root" cx="0.38" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#C8336B"/><stop offset="0.45" stop-color="#8E1647"/><stop offset="1" stop-color="#4A0A26"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5E9B45"/><stop offset="1" stop-color="#2C5E24"/></linearGradient>
+    <radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#2a0f17" stop-opacity="0.45"/><stop offset="1" stop-color="#2a0f17" stop-opacity="0"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <ellipse cx="200" cy="372" rx="110" ry="15" fill="url(#sh)"/>
+  <!-- 잎 -->
+  <path d="M190 170 C160 120 110 70 70 60 C70 110 120 150 186 176Z" fill="url(#leaf)"/>
+  <path d="M206 168 C230 110 280 60 330 52 C324 110 270 150 212 176Z" fill="url(#leaf)"/>
+  <path d="M198 168 C190 110 196 60 210 20 C236 60 228 120 204 170Z" fill="url(#leaf)"/>
+  <g stroke="#B0154E" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M190 178 C160 130 110 80 74 64"/><path d="M208 176 C236 120 284 70 326 56"/><path d="M200 176 C196 120 200 70 210 26"/>
+  </g>
+  <g stroke="#C2185B" stroke-width="1.5" fill="none" opacity="0.7">
+    <path d="M150 128 L132 112 M128 104 L108 98 M168 146 L150 150"/><path d="M252 122 L272 110 M276 96 L298 90 M236 142 L256 150"/>
+  </g>
+  <!-- 뿌리 -->
+  <path d="M200 395 C206 380 210 362 206 345" stroke="#6B0E35" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M200 168 C285 168 320 230 300 285 C285 325 245 350 205 352 C160 352 115 325 102 285 C85 230 120 168 200 168Z" fill="url(#root)"/>
+  <path d="M120 240 C140 250 170 252 200 250 M118 280 C150 292 190 294 230 288" stroke="#5A0C2E" stroke-width="1.5" opacity="0.5" fill="none"/>
+  <ellipse cx="150" cy="215" rx="34" ry="20" transform="rotate(-30 150 215)" fill="#fff" opacity="0.22" filter="url(#soft)"/>
+  <ellipse cx="200" cy="172" rx="26" ry="7" fill="#6B0E35"/>
+</svg>

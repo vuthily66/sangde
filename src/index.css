@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+html, body { overflow-x: clip; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+body { @apply bg-ivory text-basalt antialiased; word-break: keep-all; }
+
+@layer components {
+  .card { @apply rounded-3xl bg-white border border-stone-200/80 shadow-sm; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-semibold transition active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100; }
+  .btn-orange { @apply btn bg-tangerine text-white hover:bg-tangerine-dark shadow-md shadow-orange-200; }
+  .btn-green { @apply btn bg-cabbage text-white hover:bg-cabbage-dark shadow-md shadow-green-200; }
+  .btn-dark { @apply btn bg-basalt text-white hover:bg-basalt-light; }
+  .btn-ghost { @apply btn bg-stone-100 text-basalt hover:bg-stone-200; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold; }
+  /* 현무암 돌담 패턴 */
+  .basalt-wall {
+    background-color: #1E293B;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.06) 2px, transparent 3px),
+      radial-gradient(circle at 70% 60%, rgba(255,255,255,.05) 3px, transparent 4px),
+      radial-gradient(circle at 40% 80%, rgba(0,0,0,.25) 2px, transparent 3px);
+    background-size: 28px 28px, 36px 36px, 22px 22px;
+  }
+}
