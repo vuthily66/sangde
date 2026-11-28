@@ -122,13 +122,13 @@ function Intro({ visible }: { visible: boolean }) {
       aria-hidden={!visible}
       className={`absolute inset-0 overflow-y-auto px-6 pb-40 pt-24 transition-opacity duration-1000 md:pl-[19rem] md:pr-12 md:pt-14 ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
-      <div className="grid max-w-5xl gap-6 md:grid-cols-[auto_1fr] md:gap-14">
+      <div className="flex max-w-xl flex-col gap-5">
         <h1 className="text-4xl font-bold leading-[1.15] tracking-tight drop-shadow-lg md:text-6xl">
           한림으로부터
           <br />
           식탁까지
         </h1>
-        <div className="max-w-xl space-y-3 text-[15px] leading-relaxed text-white/90 drop-shadow md:pt-2">
+        <div className="max-w-lg space-y-3 text-[15px] leading-relaxed text-white/90 drop-shadow">
           <p>먹거리는 땅에서 시작해 식탁에서 완성됩니다.</p>
           <p className="hidden sm:block">
             상대로운은 제주 한림읍 상대리 농부들이 정성껏 키운 감귤 나무와 양배추 밭을 분양하고, 수확한 작물을 꾸러미와 밀키트로 집까지 보내드리는 마을 농장입니다.
@@ -136,7 +136,7 @@ function Intro({ visible }: { visible: boolean }) {
           <p>내가 이름 붙인 나무가 자라는 모습을 지켜보고, 수확철에는 직접 와서 따 가세요.</p>
         </div>
       </div>
-      <JejuOutline className="mx-auto mt-8 w-full max-w-md md:absolute md:bottom-24 md:left-1/2 md:mt-0 md:w-[44%] md:max-w-xl md:-translate-x-[15%]" />
+      <JejuOutline className="mx-auto mt-8 w-full max-w-md md:absolute md:bottom-28 md:right-12 md:mt-0 md:w-[40%] md:max-w-lg" />
     </div>
   );
 }
