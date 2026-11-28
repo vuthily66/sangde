@@ -176,7 +176,10 @@ export default function App() {
             stamps={state.stamps}
             reservedBenefits={state.reservedBenefits}
             certificateIssuedAt={state.certificateIssuedAt}
-            onStamp={(id) => update((s) => ({ stamps: s.stamps.includes(id) ? s.stamps : [...s.stamps, id] }))}
+            stampPhotos={state.stampPhotos ?? {}}
+            residentPhoto={state.residentPhoto ?? null}
+            onStamp={(id, photo) => update((s) => ({ stamps: s.stamps.includes(id) ? s.stamps : [...s.stamps, id], stampPhotos: { ...(s.stampPhotos ?? {}), [id]: photo } }))}
+            onResidentPhoto={(residentPhoto) => update({ residentPhoto })}
             onReserve={reserve}
             onIssueCertificate={() => update((s) => ({ certificateIssuedAt: s.certificateIssuedAt ?? new Date().toISOString() }))}
             onGoRental={() => setTab('rental')}

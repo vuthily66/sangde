@@ -4,7 +4,7 @@ import { CULTIVATION_TASKS, FARMER_REPLIES, FARMERS, getCareMode } from '../data
 import { getProduct } from '../data/farmProducts';
 import { getSchedule, taskDate, ymd } from '../season';
 import type { CultivationTask, LogEntry, MyFarm } from '../types';
-import { pick } from '../utils';
+import { pick, shrinkPhoto } from '../utils';
 import CropIllustration from './CropIllustration';
 import Modal from './Modal';
 import { GuideLink } from './GuideBook';
@@ -15,24 +15,6 @@ interface Props {
   onAddEntry: (farmId: string, entry: LogEntry) => void;
   onUpdateEntry: (farmId: string, taskId: string, patch: (e: LogEntry) => LogEntry) => void;
   onOpenGuide?: (chapter: GuideChapterId) => void;
-}
-
-/** 사진을 480px JPEG로 줄여 localStorage에 담을 수 있게 */
-async function shrinkPhoto(file: File): Promise<string> {
-  const url = URL.createObjectURL(file);
-  try {
-    const img = new Image();
-    img.src = url;
-    await img.decode();
-    const scale = Math.min(1, 480 / Math.max(img.width, img.height));
-    const c = document.createElement('canvas');
-    c.width = Math.round(img.width * scale);
-    c.height = Math.round(img.height * scale);
-    c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
-    return c.toDataURL('image/jpeg', 0.72);
-  } finally {
-    URL.revokeObjectURL(url);
-  }
 }
 
 export default function CultivationLog({ farm, onAddEntry, onUpdateEntry, onOpenGuide }: Props) {

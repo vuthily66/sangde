@@ -171,6 +171,8 @@ export interface AppState {
   reservedBenefits: string[];
   certificateIssuedAt: string | null;
   runs: RunRecord[];
+  stampPhotos?: Record<string, string>; // 미션별 인증샷 (data URL)
+  residentPhoto?: string | null; // 명예 주민증 사진
 }
 
 /** 마을 탐방 */

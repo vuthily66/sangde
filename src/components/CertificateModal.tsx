@@ -1,11 +1,11 @@
-import { Copy, Gift, Pencil } from 'lucide-react';
+import { Camera, Copy, Gift, Pencil } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import orchardWall from '../assets/photos/orchard-wall.webp';
 import { RUN_COURSES } from '../data/explore';
 import { STAMP_MISSIONS } from '../data/travel';
 import { getVariety } from '../data/trees';
 import type { MyFarm, RunRecord } from '../types';
-import { formatDate } from '../utils';
+import { formatDate, shrinkPhoto } from '../utils';
 import Modal from './Modal';
 
 interface Props {
@@ -15,6 +15,9 @@ interface Props {
   issuedAt: string | null;
   stamps?: string[];
   runs?: RunRecord[];
+  stampPhotos?: Record<string, string>;
+  residentPhoto?: string | null;
+  onResidentPhoto?: (photo: string | null) => void;
 }
 
 const NAME_KEY = 'sangdaeroun-resident-name';
@@ -33,12 +36,14 @@ function titleOf(farms: MyFarm[], runKm: number) {
 }
 
 /** 상대리 명예 주민증 */
-export default function CertificateModal({ open, onClose, farms, issuedAt, stamps = [], runs = [] }: Props) {
+export default function CertificateModal({ open, onClose, farms, issuedAt, stamps = [], runs = [], stampPhotos = {}, residentPhoto = null, onResidentPhoto }: Props) {
+  const [photoError, setPhotoError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [name, setName] = useState('');
   useEffect(() => {
     if (!open) return;
     setCopied(false);
+    setPhotoError(false);
     try {
       setName(localStorage.getItem(NAME_KEY) ?? '');
     } catch {
@@ -64,8 +69,36 @@ export default function CertificateModal({ open, onClose, farms, issuedAt, stamp
       <article className="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-stone-200">
         {/* 사진 머리 */}
         <div className="relative h-40">
-          <img src={orchardWall} alt="상대리 감귤밭" className="h-full w-full object-cover" style={{ objectPosition: '50% 62%' }} />
+          {/* 주민증 사진: 직접 올린 사진 → 첫 인증샷 → 기본 감귤밭 사진 */}
+          <img
+            src={residentPhoto ?? Object.values(stampPhotos)[0] ?? orchardWall}
+            alt="명예 주민증 사진"
+            className="h-full w-full object-cover"
+            style={{ objectPosition: residentPhoto || Object.values(stampPhotos)[0] ? '50% 40%' : '50% 62%' }}
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/70" />
+          {onResidentPhoto && (
+            <label className="absolute left-3 top-3 flex cursor-pointer items-center gap-1 rounded-full bg-black/50 px-3 py-1.5 text-[11px] font-bold text-white backdrop-blur hover:bg-black/65 focus-within:ring-2 focus-within:ring-white">
+              <Camera size={12} /> 내 사진으로 바꾸기
+              <input
+                id="resident-photo"
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = '';
+                  if (!f) return;
+                  try {
+                    onResidentPhoto(await shrinkPhoto(f, 720));
+                    setPhotoError(false);
+                  } catch {
+                    setPhotoError(true);
+                  }
+                }}
+              />
+            </label>
+          )}
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between px-5 pb-3 text-white">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-200">Honorary Resident</p>
@@ -76,6 +109,7 @@ export default function CertificateModal({ open, onClose, farms, issuedAt, stamp
         </div>
 
         <div className="space-y-4 p-5">
+          {photoError && <p className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-700">사진을 읽지 못했어요. JPG나 PNG 사진으로 다시 올려주세요.</p>}
           {/* 이름 + 칭호 */}
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
@@ -110,11 +144,12 @@ export default function CertificateModal({ open, onClose, farms, issuedAt, stamp
               return (
                 <div key={m.id} className="flex flex-col items-center gap-1 text-center">
                   <span
-                    className={`grid h-14 w-14 -rotate-12 place-items-center rounded-full border-[3px] border-double text-2xl ${
+                    className={`relative grid h-16 w-16 shrink-0 place-items-center rounded-full border-[3px] border-double text-2xl ${
                       got ? 'border-red-500 bg-red-50' : 'border-stone-200 opacity-40 grayscale'
                     }`}
                   >
-                    {m.emoji}
+                    {stampPhotos[m.id] ? <img src={stampPhotos[m.id]} alt={`${m.title} 인증샷`} className="absolute inset-0 h-full w-full rounded-full object-cover" /> : m.emoji}
+                    {got && <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 -rotate-12 place-items-center rounded-full bg-red-500 text-[11px] text-white ring-2 ring-white">{m.emoji}</span>}
                   </span>
                   <span className="text-[11px] font-semibold leading-tight text-stone-600">{m.title}</span>
                 </div>

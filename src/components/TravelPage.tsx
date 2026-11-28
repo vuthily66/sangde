@@ -1,21 +1,24 @@
-import { Award, CalendarCheck, Check, Lock, MapPin, Ticket } from 'lucide-react';
+import { Award, Camera, CalendarCheck, Check, Lock, MapPin, Ticket } from 'lucide-react';
 import { useState } from 'react';
 import { STAMP_MISSIONS, VISIT_BENEFITS } from '../data/travel';
 import type { MyFarm, RunRecord, VisitBenefit } from '../types';
 import CertificateModal from './CertificateModal';
 import DurungBubble from './DurungBubble';
 import Modal from './Modal';
+import { shrinkPhoto } from '../utils';
 import VillageExplore from './VillageExplore';
 import { getProduct } from '../data/farmProducts';
 import { dayLabel, farmSchedule, getSchedule, harvestSlots } from '../season';
-import CropImage from './CropImage';
 
 interface Props {
   farms: MyFarm[];
   stamps: string[];
   reservedBenefits: string[];
   certificateIssuedAt: string | null;
-  onStamp: (id: string) => void;
+  onStamp: (id: string, photo: string) => void;
+  stampPhotos: Record<string, string>;
+  residentPhoto: string | null;
+  onResidentPhoto: (photo: string | null) => void;
   onReserve: (id: string, detail: string) => void;
   runs: RunRecord[];
   onRun: (record: RunRecord) => void;
@@ -24,7 +27,8 @@ interface Props {
 }
 
 
-export default function TravelPage({ farms, stamps, reservedBenefits, certificateIssuedAt, onStamp, onReserve, onIssueCertificate, onGoRental, runs, onRun }: Props) {
+export default function TravelPage({ farms, stamps, reservedBenefits, certificateIssuedAt, onStamp, onReserve, onIssueCertificate, onGoRental, runs, onRun, stampPhotos, residentPhoto, onResidentPhoto }: Props) {
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [justStamped, setJustStamped] = useState<string | null>(null);
   const [certOpen, setCertOpen] = useState(false);
   const [benefit, setBenefit] = useState<VisitBenefit | null>(null);
@@ -42,9 +46,19 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
   const isMember = farms.length > 0;
   const complete = stamps.length === STAMP_MISSIONS.length;
 
-  const handleStamp = (id: string) => {
-    if (stamps.includes(id)) return;
-    onStamp(id);
+  const handleStamp = async (id: string, file?: File) => {
+    if (!file) return;
+    let photo: string;
+    try {
+      photo = await shrinkPhoto(file);
+      setPhotoError(null);
+    } catch {
+      setPhotoError('사진을 읽지 못했어요. JPG나 PNG 사진으로 다시 올려주세요.');
+      return;
+    }
+    const isNew = !stamps.includes(id);
+    onStamp(id, photo);
+    if (!isNew) return;
     setJustStamped(id);
     setTimeout(() => setJustStamped(null), 700);
     if (stamps.length + 1 === STAMP_MISSIONS.length) {
@@ -110,7 +124,7 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <h3 className="text-xl font-extrabold">🗺️ 상대리 마을 투어 스탬프 미션</h3>
-            <p className="text-sm text-slate-300">현장에서 미션 카드를 눌러 스탬프를 찍어보세요 (시연용: 클릭 시 즉시 획득)</p>
+            <p className="text-sm text-slate-300">현장에서 인증샷을 찍어 올리면 도장이 찍혀요. 세 곳을 다 모으면 명예 주민증이 나와요</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="h-2.5 w-32 overflow-hidden rounded-full bg-white/15">
@@ -124,38 +138,64 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
           {STAMP_MISSIONS.map((m, i) => {
             const got = stamps.includes(m.id);
             return (
-              <button
+              <label
                 key={m.id}
-                onClick={() => handleStamp(m.id)}
-                className={`group relative overflow-hidden rounded-3xl p-5 text-left transition ${
+                className={`group relative block cursor-pointer overflow-hidden rounded-3xl text-left transition focus-within:ring-2 focus-within:ring-orange-300 ${
                   got ? 'bg-white text-basalt' : 'bg-white/5 ring-1 ring-white/15 hover:bg-white/10 hover:-translate-y-1'
                 } ${justStamped === m.id ? 'scale-[1.03]' : ''}`}
               >
-                <span className={`text-[11px] font-bold ${got ? 'text-tangerine' : 'text-orange-300'}`}>MISSION {i + 1}</span>
-                {m.id === 'cabbage-photo' ? <CropImage crop="cabbage" size={52} className="mt-1 drop-shadow" /> : m.id === 'tangerine-cafe' ? <CropImage crop="tangerine" size={52} className="mt-1 drop-shadow" /> : <div className="mt-1 text-4xl">{m.emoji}</div>}
-                <h4 className="mt-2 font-extrabold">{m.title}</h4>
-                <p className={`text-xs ${got ? 'text-stone-500' : 'text-slate-400'}`}>{m.location}</p>
-                <p className={`mt-2 text-sm ${got ? 'text-stone-600' : 'text-slate-300'}`}>{m.description}</p>
-                {/* 스탬프 */}
-                <div className="absolute right-3 top-3 h-20 w-20">
-                  {got ? (
-                    <div className={`grid h-20 w-20 -rotate-12 place-items-center rounded-full border-[3px] border-double border-red-500 text-center text-red-500 ${justStamped === m.id ? 'animate-stamp-in' : ''}`}>
-                      <div className="leading-tight">
-                        <div className="text-[9px] font-bold">SANGDAE-RI</div>
-                        <div className="text-sm font-black">참 잘했어요</div>
-                        <div className="text-[9px] font-bold">{m.emoji} VISITED</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid h-20 w-20 place-items-center rounded-full border-2 border-dashed border-white/25 text-[10px] font-semibold text-white/40 group-hover:border-orange-300 group-hover:text-orange-300">
-                      TAP!
-                    </div>
-                  )}
+                <input
+                  id={`stamp-photo-${m.id}`}
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  aria-label={`${m.title} 인증샷 올리기`}
+                  onChange={(e) => {
+                    handleStamp(m.id, e.target.files?.[0]);
+                    e.target.value = '';
+                  }}
+                />
+                {/* 인증샷 */}
+                {stampPhotos[m.id] ? (
+                  <div className="relative aspect-[4/3] w-full">
+                    <img src={stampPhotos[m.id]} alt={`${m.title} 인증샷`} className="h-full w-full object-cover" />
+                    <span className="absolute bottom-2 left-2 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-semibold text-white opacity-0 transition group-hover:opacity-100">
+                      <Camera size={11} className="mr-1 inline" />
+                      다시 찍기
+                    </span>
+                  </div>
+                ) : (
+                  <div className="grid aspect-[4/3] w-full place-items-center border-b border-dashed border-white/20 text-center text-white/70 group-hover:text-orange-200">
+                    <span className="flex flex-col items-center gap-1.5">
+                      <Camera size={30} />
+                      <span className="text-sm font-bold">인증샷 찍고 도장 받기</span>
+                      <span className="text-[11px] text-white/50">사진을 올리면 도장이 찍혀요</span>
+                    </span>
+                  </div>
+                )}
+                <div className="p-5 pt-4">
+                  <span className={`text-[11px] font-bold ${got ? 'text-tangerine' : 'text-orange-300'}`}>MISSION {i + 1}</span>
+                  <h4 className="mt-0.5 font-extrabold">
+                    {m.emoji} {m.title}
+                  </h4>
+                  <p className={`text-xs ${got ? 'text-stone-500' : 'text-slate-400'}`}>{m.location}</p>
+                  <p className={`mt-2 text-sm ${got ? 'text-stone-600' : 'text-slate-300'}`}>{m.description}</p>
                 </div>
-              </button>
+                {/* 도장 */}
+                {got && (
+                  <div className={`absolute right-3 top-3 grid h-20 w-20 -rotate-12 place-items-center rounded-full border-[3px] border-double border-red-500 bg-white/85 text-center text-red-500 ${justStamped === m.id ? 'animate-stamp-in' : ''}`}>
+                    <div className="leading-tight">
+                      <div className="text-[9px] font-bold">SANGDAE-RI</div>
+                      <div className="text-sm font-black">참 잘했어요</div>
+                      <div className="text-[9px] font-bold">{m.emoji} VISITED</div>
+                    </div>
+                  </div>
+                )}
+              </label>
             );
           })}
         </div>
+        {photoError && <p className="mt-4 rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-200">{photoError}</p>}
         {complete && (
           <button onClick={() => setCertOpen(true)} className="btn-orange mt-6 w-full sm:w-auto">
             <Award size={18} /> 명예 주민증 보기
@@ -163,7 +203,7 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
         )}
       </section>
 
-      <CertificateModal open={certOpen} onClose={() => setCertOpen(false)} farms={farms} issuedAt={certificateIssuedAt} stamps={stamps} runs={runs} />
+      <CertificateModal open={certOpen} onClose={() => setCertOpen(false)} farms={farms} issuedAt={certificateIssuedAt} stamps={stamps} runs={runs} stampPhotos={stampPhotos} residentPhoto={residentPhoto} onResidentPhoto={onResidentPhoto} />
 
       {/* 혜택 상세 모달 */}
       <Modal open={!!benefit} onClose={() => setBenefit(null)}>
