@@ -56,8 +56,8 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
   };
 
   const msg = complete
-    ? '스탬프 3개 완성! 이제 너도 어엿한 상대리 디지털 농부야 🏅'
-    : `상대리 곳곳을 돌며 스탬프를 모아봐! 3개를 다 모으면 디지털 농부 인증서를 줄게 (${stamps.length}/3)`;
+    ? '스탬프 3개 완성! 이제 너도 상대리 명예 주민이야 🏅 주민증을 받아봐!'
+    : `상대리 곳곳을 돌며 스탬프를 모아봐! 3개를 다 모으면 상대리 명예 주민증를 줄게 (${stamps.length}/3)`;
 
   return (
     <div className="space-y-10">
@@ -158,12 +158,12 @@ export default function TravelPage({ farms, stamps, reservedBenefits, certificat
         </div>
         {complete && (
           <button onClick={() => setCertOpen(true)} className="btn-orange mt-6 w-full sm:w-auto">
-            <Award size={18} /> 디지털 농부 인증서 보기
+            <Award size={18} /> 명예 주민증 보기
           </button>
         )}
       </section>
 
-      <CertificateModal open={certOpen} onClose={() => setCertOpen(false)} farms={farms} issuedAt={certificateIssuedAt} />
+      <CertificateModal open={certOpen} onClose={() => setCertOpen(false)} farms={farms} issuedAt={certificateIssuedAt} stamps={stamps} runs={runs} />
 
       {/* 혜택 상세 모달 */}
       <Modal open={!!benefit} onClose={() => setBenefit(null)}>
